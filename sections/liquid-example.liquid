@@ -1,0 +1,110 @@
+{% schema %}
+{
+  "name": "Liquid Example",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Liquid Example"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Add your description here</p>"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Liquid Example",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="page-width" style="background-color: {{ section.settings.background_color }}">
+  <h2>{{ section.settings.heading }}</h2>
+  <div class="liquid-example-content" style="background-color: {{ section.settings.background_color }}">
+    {% if template.name == 'cart' %}
+      <h3>Cart Template</h3>
+    {% else %}
+      <h3>Other Template</h3>
+    {% endif %}
+
+    <h3>Global Objects Available:</h3>
+    <ul>
+      <li>Shop Info:
+        <ul>
+          <li>Shop Name: {{ shop.name }}</li>
+          <li>Shop Email: {{ shop.email }}</li>
+          <li>Shop Currency: {{ shop.currency }}</li>
+          <li>Shop Domain: {{ shop.domain }}</li>
+        </ul>
+      </li>
+
+      <li>Request Info:
+        <ul>
+          <li>Current Page URL: {{ request.path }}</li>
+          <li>Host: {{ request.host }}</li>
+          <li>Is Homepage?: {% if request.page_type == "index" -%} True {%- else -%} False {%- endif -%}</li>
+          <li>Locale is: {{ request.locale.iso_code }}</li>
+          <li>Locale name is: {{ request.locale.name }}</li>
+        </ul>
+      </li>
+
+      <li>Customer Info (if logged in):
+        <ul>
+          {% if customer %}
+            <li>Name: {{ customer.name }}</li>
+            <li>Email: {{ customer.email }}</li>
+            <li>Orders Count: {{ customer.orders_count }}</li>
+          {% else %}
+            <li>No customer logged in</li>
+          {% endif %}
+        </ul>
+      </li>
+
+      <li>Cart Info:
+        <ul>
+          <li>Items in Cart: {{ cart.item_count }}</li>
+          <li>Total Price: {{ cart.total_price | money }}</li>
+        </ul>
+      </li>
+
+      <li>Current Date: {{ 'now' | date: '%Y-%m-%d %H:%M' }}</li>
+      <li>Current Language: {{ request.locale.iso_code }}</li>
+    </ul>
+
+    <h3>Section Settings Values:</h3>
+    <ul>
+      <li>Page Title: {% if page.title %}{{ page.title }}{% else %}Not on a page template{% endif %}</li>
+      <li>Template Type: {{ template.name | capitalize }}</li>
+      <li>Heading: {{ section.settings.heading }}</li>
+      <li>Description: {{ section.settings.description | remove: "<p>" | remove: "</p>" }}</li>
+      <li>Background Color: {{ section.settings.background_color }}</li>
+    </ul>
+
+    <div class="description">
+      {{ section.settings.description }}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+.liquid-example-content {
+  padding: 20px;
+  border-radius: 4px;
+}
+
+.description {
+  margin-top: 20px;
+}
+{% endstylesheet %}
